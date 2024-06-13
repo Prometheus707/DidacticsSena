@@ -1,0 +1,71 @@
+<?php
+session_start();
+ ?>
+<?php
+
+require_once("../../conexiondb.php");
+$formatos= array( '.pdf' , '.pdf');
+  if(isset($_POST['enviar'])){
+
+ $nombre=$_POST['nombre'];
+ $descripcion=$_POST['descripcion'];
+
+
+// este es el codigo de guardar diferentes tipos de archivos //
+
+    $formatos= array( '.pdf','docx');
+ 		$nombreArchivo     =$_FILES ['grafica'] ['name'];
+ 		$nombreTmpArchivo = $_FILES ['grafica'] ['tmp_name'];
+ 		$ext= substr($nombreArchivo, strrpos( $nombreArchivo, '.' ));
+ 		if ( in_array($ext, $formatos)){
+ 			if ( move_uploaded_file ( $nombreTmpArchivo , "../../pdf/$nombreArchivo" )) {
+           echo  "Felicitaciones, archivo $nombreArchivo subido exitosamente" ;
+ 			} else{
+ 				echo  'Ocurrió un error subiendo el archivo, valida los permisos de la carpeta "archivos"' ;
+ 			}
+ 		} else {
+ 			echo  'por favor elija un archivo de diferente extensión' ;
+
+ 		}
+
+// cierre de codigo //
+
+// cierre de codigo //
+$formato= array(  '.pdf');
+$nombreArchivos     =$_FILES ['enlace'] ['name'];
+$nombreTmpArchivos = $_FILES ['enlace'] ['tmp_name'];
+$exte= substr($nombreArchivos, strrpos( $nombreArchivos, '.' ));
+if ( in_array($exte, $formato)){
+  if ( move_uploaded_file ( $nombreTmpArchivos , "../../pdf/$nombreArchivos" )) {
+    echo  "Felicitaciones, archivo $nombreArchivos subido exitosamente" ;
+  } else{
+    echo  'Ocurrió un error subiendo el archivo, valida los permisos de la carpeta "archivos"' ;
+  }
+} else {
+  echo  'por favor elija un archivo de diferente extensión' ;
+}
+
+		  	$consulta = "SELECT * FROM reflexioncierrepdf";
+
+		  	$resultado = $conecta->query($consulta);
+
+		  		if($resultado->num_rows >= 0)
+		  		{
+		  			$consulta = "INSERT INTO conformargpdf (idConforPdf,nombreConforPdf,descripcionCoPdf,pdfConfor)
+		  						VALUES ('','$nombre','$descripcion','$nombreArchivo')";
+		  					if($conecta->query($consulta) === TRUE)
+		  					{
+
+                    header('location:../tdaEquipos.php?opcion1=true');
+		  					}
+		  					else
+		  					{
+		  						echo "Error: " . $consulta . "<br>" . $conecta->error;
+		  					}
+		  		}
+
+
+		$conecta->close();
+
+}
+	?>
